@@ -1,0 +1,461 @@
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* --- CSS Variables (Theme Colors) --- */
+:root {
+    --primary-text-color: #ffffff;
+    --secondary-text-color: rgba(255, 255, 255, 0.8); /* Slightly more opaque for better readability */
+    --card-bg-color: rgba(0, 0, 0, 0.25); /* A bit more contrast */
+    --card-border-color: rgba(255, 255, 255, 0.2);
+    
+    /* --- NEW & IMPROVED BACKGROUNDS --- */
+    
+    /* A bright, optimistic daytime sky */
+    --bg-clear: linear-gradient(to top, #89f7fe 0%, #66a6ff 100%);
+    
+    /* A soft, calm, and overcast feel with muted tones */
+    --bg-clouds: linear-gradient(to top, #a7c0cd, #d7d2cc);
+    
+    /* A moody, dramatic, and cool gradient for storms */
+    --bg-rain: linear-gradient(to top, #606c88, #3f4c6b);
+    
+    /* A deep, celestial night sky with hints of twilight */
+    --bg-night: linear-gradient(to top, #2C5364, #203A43, #0F2027);
+}
+
+/* --- Basic Setup --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--primary-text-color);
+    overflow-x: hidden;
+    transition: background 1s ease;
+}
+
+/* --- Dynamic Background Container & Animations --- */
+.background-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    z-index: -10;
+    background: var(--bg-clear); /* Default */
+    transition: background 1s ease;
+}
+
+/* Base state: hide all animated elements */
+.sun, .clouds, .rain {
+    display: none;
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+}
+
+/* --- Sun Animation --- */
+.sun-element {
+    position: absolute;
+    top: 10%;
+    left: 10%;
+    width: 150px;
+    height: 150px;
+    background: radial-gradient(circle, #FFD700, #FFA500);
+    border-radius: 50%;
+    box-shadow: 0 0 50px #FFD700, 0 0 100px #FFA500;
+    animation: spin 60s linear infinite;
+}
+
+@keyframes spin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}
+
+/* --- Cloud Animation --- */
+.cloud-element {
+    position: absolute;
+    width: 200px;
+    height: 60px;
+    background: #f2f9ff;
+    border-radius: 60px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    animation: move-clouds 25s linear infinite;
+}
+.cloud-element::before, .cloud-element::after {
+    content: '';
+    position: absolute;
+    background: #f2f9ff;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    top: -50px;
+    left: 40px;
+}
+.cloud-element::after {
+    width: 60px;
+    height: 60px;
+    top: -30px;
+    left: auto;
+    right: 30px;
+}
+
+/* Position multiple clouds */
+.cloud-1 { top: 20%; transform: scale(0.8); animation-delay: -5s; animation-duration: 30s; }
+.cloud-2 { top: 40%; transform: scale(1.2); animation-delay: 0s; }
+.cloud-3 { top: 60%; transform: scale(0.6); animation-delay: -10s; animation-duration: 35s; }
+
+@keyframes move-clouds {
+    from { left: -250px; }
+    to { left: 100vw; }
+}
+
+/* --- Rain Animation --- */
+.rain { pointer-events: none; }
+.raindrop {
+    position: absolute;
+    bottom: 100%;
+    width: 2px;
+    height: 80px;
+    background: linear-gradient(to top, rgba(255,255,255,0.1), rgba(255,255,255,0.5));
+    animation: fall linear infinite;
+}
+@keyframes fall {
+    to { transform: translateY(110vh); }
+}
+
+/* --- JS-Controlled Weather States --- */
+body.weather-clear .background-container { background: var(--bg-clear); }
+body.weather-clear .sun { display: block; }
+
+body.weather-clouds .background-container { background: var(--bg-clouds); }
+body.weather-clouds .clouds { display: block; }
+
+body.weather-rain .background-container { background: var(--bg-rain); }
+body.weather-rain .rain { display: block; }
+body.weather-rain .clouds { display: block; } /* Often cloudy when raining */
+
+body.weather-night .background-container { background: var(--bg-night); }
+/* Add moon/stars for night if you like! */
+
+/* --- Main App Layout & Glassmorphism --- */
+.app-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg-color);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 20px;
+    border: 1px solid var(--card-border-color);
+}
+
+/* --- Header & Search Bar --- */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.search-bar {
+    display: flex;
+    flex-grow: 1;
+}
+.search-bar input {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: none;
+    border-radius: 25px 0 0 25px;
+    background: rgba(0,0,0,0.3);
+    color: var(--primary-text-color);
+    font-size: 1rem;
+    outline: none;
+}
+.search-bar input::placeholder { color: var(--secondary-text-color); }
+.search-bar button, #gps-btn {
+    padding: 0.75rem 1rem;
+    border: none;
+    background: #4a90e2;
+    color: white;
+    cursor: pointer;
+    transition: background 0.3s ease;
+    font-size: 1rem;
+}
+.search-bar button { border-radius: 0 25px 25px 0; }
+#gps-btn { border-radius: 25px; }
+.search-bar button:hover, #gps-btn:hover { background: #357abd; }
+
+/* --- Main Info Grid --- */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Card base style */
+.info-grid > div {
+    background: var(--card-bg-color);
+    border: 1px solid var(--card-border-color);
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+}
+.info-grid > div:hover {
+    transform: translateY(-5px);
+}
+.info-grid h2 {
+    margin-bottom: 1rem;
+    font-weight: 500;
+    color: var(--secondary-text-color);
+    border-bottom: 1px solid var(--card-border-color);
+    padding-bottom: 0.5rem;
+}
+
+/* Specific Card Styles */
+.weather-main-card {
+    grid-column: 1 / -1; /* Span full width on larger grids */
+    text-align: center;
+}
+@media (min-width: 900px) {
+    .weather-main-card { grid-column: 1 / 3; grid-row: 1 / 3; }
+}
+.weather-main-card h1 { font-size: 2.5rem; font-weight: 600; }
+.weather-main-card p { color: var(--secondary-text-color); }
+.weather-display {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 1rem 0;
+}
+.weather-display .temperature { font-size: 6rem; font-weight: 700; margin-left: -1rem;}
+#weather-icon { width: 128px; height: 128px; }
+#weather-description { font-size: 1.5rem; text-transform: capitalize; }
+
+.time-card #local-time { font-size: 3rem; font-weight: 600; text-align: center; }
+.details-card p, .prayer-times-card li { margin-bottom: 0.75rem; font-size: 1.1rem; }
+.prayer-times-card ul { list-style-type: none; }
+.prayer-times-card li { display: flex; justify-content: space-between; }
+.prayer-times-card span { font-weight: 600; }
+
+.quote-card blockquote { font-style: italic; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.quote-card cite { display: block; text-align: right; color: var(--secondary-text-color); }
+
+
+/* --- Loader/Spinner --- */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.spinner {
+    width: 60px;
+    height: 60px;
+    border: 5px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: loading-spin 1s linear infinite;
+}
+@keyframes loading-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+    .app-container { margin: 1rem; padding: 1.5rem; }
+    .header-section { flex-direction: column; }
+    .search-bar { width: 100%; }
+    .weather-main-card h1 { font-size: 2rem; }
+    .weather-display .temperature { font-size: 5rem; }
+}
+/* --- Google Font Import --- */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+/* --- CSS Variables (Theme Colors) --- */
+:root {
+    --primary-text-color: #ffffff;
+    --secondary-text-color: rgba(255, 255, 255, 0.75);
+    --card-bg-color: rgba(0, 0, 0, 0.2);
+    --card-border-color: rgba(255, 255, 255, 0.2);
+    
+    /* Backgrounds for different weather */
+    --bg-clear: linear-gradient(to top, #4a90e2, #2768b3);
+    --bg-clouds: linear-gradient(to top, #7d97ad, #5e768a);
+    --bg-rain: linear-gradient(to top, #6c7a89, #424850);
+    --bg-night: linear-gradient(to top, #3c3c54, #1a1a2e);
+}
+
+/* --- Basic Setup --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    color: var(--primary-text-color);
+    overflow-x: hidden;
+    transition: background 1s ease;
+}
+
+/* --- Dynamic Background Container & Animations --- */
+.background-container {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100vh;
+    z-index: -10;
+    background: var(--bg-clear); /* Default */
+    transition: background 1s ease;
+}
+
+/* ... (Keep all the .sun, .clouds, .rain animation styles from the previous answer, they are correct) ... */
+/* Base state: hide all animated elements */
+.sun, .clouds, .rain { display: none; position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+.sun-element { position: absolute; top: 10%; left: 10%; width: 150px; height: 150px; background: radial-gradient(circle, #FFD700, #FFA500); border-radius: 50%; box-shadow: 0 0 50px #FFD700, 0 0 100px #FFA500; animation: spin 60s linear infinite; }
+@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+.cloud-element { position: absolute; width: 200px; height: 60px; background: #f2f9ff; border-radius: 60px; box-shadow: 0 0 20px rgba(0,0,0,0.2); animation: move-clouds 25s linear infinite; }
+.cloud-element::before, .cloud-element::after { content: ''; position: absolute; background: #f2f9ff; border-radius: 50%; width: 100px; height: 100px; top: -50px; left: 40px; }
+.cloud-element::after { width: 60px; height: 60px; top: -30px; left: auto; right: 30px; }
+.cloud-1 { top: 20%; transform: scale(0.8); animation-delay: -5s; animation-duration: 30s; }
+.cloud-2 { top: 40%; transform: scale(1.2); animation-delay: 0s; }
+.cloud-3 { top: 60%; transform: scale(0.6); animation-delay: -10s; animation-duration: 35s; }
+@keyframes move-clouds { from { left: -250px; } to { left: 100vw; } }
+.rain { pointer-events: none; }
+.raindrop { position: absolute; bottom: 100%; width: 2px; height: 80px; background: linear-gradient(to top, rgba(255,255,255,0.1), rgba(255,255,255,0.5)); animation: fall linear infinite; }
+@keyframes fall { to { transform: translateY(110vh); } }
+
+/* --- JS-Controlled Weather States --- */
+body.weather-clear .background-container { background: var(--bg-clear); }
+body.weather-clear .sun { display: block; }
+body.weather-clouds .background-container { background: var(--bg-clouds); }
+body.weather-clouds .clouds { display: block; }
+body.weather-rain .background-container { background: var(--bg-rain); }
+body.weather-rain .rain { display: block; }
+body.weather-rain .clouds { display: block; }
+body.weather-night .background-container { background: var(--bg-night); }
+
+
+/* --- Main App Layout & Glassmorphism --- */
+.app-container {
+    max-width: 1200px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background: var(--card-bg-color);
+    backdrop-filter: blur(12px) saturate(150%);
+    -webkit-backdrop-filter: blur(12px) saturate(150%);
+    border-radius: 20px;
+    border: 1px solid var(--card-border-color);
+}
+
+/* --- Header & Search Bar --- */
+.header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+.search-bar { display: flex; flex-grow: 1; }
+.search-bar input { width: 100%; padding: 0.75rem 1rem; border: none; border-radius: 25px 0 0 25px; background: rgba(0,0,0,0.3); color: var(--primary-text-color); font-size: 1rem; outline: none; }
+.search-bar input::placeholder { color: var(--secondary-text-color); }
+.search-bar button, #gps-btn { padding: 0.75rem 1rem; border: none; background: #4a90e2; color: white; cursor: pointer; transition: background 0.3s ease; font-size: 1rem; }
+.search-bar button { border-radius: 0 25px 25px 0; }
+#gps-btn { border-radius: 25px; }
+.search-bar button:hover, #gps-btn:hover { background: #357abd; }
+
+/* --- Main Info Grid --- */
+.info-grid {
+    display: grid;
+    /* *** MODIFIED minmax for better responsiveness *** */
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1.5rem;
+}
+
+/* Card base style */
+.info-grid > div {
+    background: var(--card-bg-color);
+    border: 1px solid var(--card-border-color);
+    border-radius: 15px;
+    padding: 1.5rem;
+    transition: transform 0.3s ease;
+    overflow: hidden; /* Prevents content from spilling out */
+}
+.info-grid > div:hover { transform: translateY(-5px); }
+.info-grid h2 { margin-bottom: 1rem; font-weight: 500; color: var(--secondary-text-color); border-bottom: 1px solid var(--card-border-color); padding-bottom: 0.5rem; }
+
+/* Specific Card Styles */
+.weather-main-card { grid-column: 1 / -1; text-align: center; }
+@media (min-width: 880px) { /* Adjusted breakpoint for better layout */
+    .weather-main-card { grid-column: 1 / 3; grid-row: 1 / 3; }
+}
+.weather-main-card h1 { font-size: 2.5rem; font-weight: 600; }
+.weather-main-card p { color: var(--secondary-text-color); }
+.weather-display { display: flex; align-items: center; justify-content: center; margin: 1rem 0; }
+.weather-display .temperature { font-size: 6rem; font-weight: 700; margin-left: -1rem;}
+#weather-icon { width: 128px; height: 128px; }
+#weather-description { font-size: 1.5rem; text-transform: capitalize; }
+
+.time-card #local-time { font-size: 3rem; font-weight: 600; text-align: center; }
+.details-card p, .prayer-times-card li { margin-bottom: 0.75rem; font-size: 1.1rem; }
+.prayer-times-card ul { list-style-type: none; }
+.prayer-times-card li { display: flex; justify-content: space-between; }
+.prayer-times-card span { font-weight: 600; }
+
+.quote-card blockquote { font-style: italic; font-size: 1.1rem; margin-bottom: 0.5rem; }
+.quote-card cite { display: block; text-align: right; color: var(--secondary-text-color); }
+
+
+/* --- Loader/Spinner --- */
+.loader-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; }
+.spinner { width: 60px; height: 60px; border: 5px solid rgba(255, 255, 255, 0.3); border-top-color: #ffffff; border-radius: 50%; animation: loading-spin 1s linear infinite; }
+@keyframes loading-spin { to { transform: rotate(360deg); } }
+
+/* --- Responsiveness --- */
+@media (max-width: 768px) {
+    .header-section { flex-direction: column; }
+    .search-bar { width: 100%; }
+}
+
+/* *** NEW: MEDIA QUERY FOR VERY SMALL SCREENS (like 325px width) *** */
+@media (max-width: 400px) {
+    .app-container {
+        /* Reduce padding and margin to give content more space */
+        margin: 0.5rem;
+        padding: 1rem;
+    }
+    .info-grid {
+        /* Force single column layout */
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
+    .info-grid > div {
+        padding: 1rem; /* Reduce card padding */
+    }
+    .weather-main-card h1 {
+        font-size: 1.8rem; /* Reduce main city font size */
+    }
+    .weather-display .temperature {
+        font-size: 4.5rem; /* Reduce temperature font size */
+    }
+    #weather-icon {
+        width: 100px;
+        height: 100px;
+    }
+    .time-card #local-time {
+        font-size: 2.5rem;
+    }
+    body {
+        font-size: 14px; /* Reduce base font for very small screens */
+    }
+}

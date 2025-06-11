@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AuraWeather - Your Daily Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- For Icons (Font Awesome) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="icon" href="icon.png" />
+</head>
+<body>
+
+    <!-- This container will hold our dynamic background animations -->
+    <div class="background-container">
+        <div class="sun"></div>
+        <div class="clouds"></div>
+        <div class="rain"></div>
+        <!-- Add mountain SVGs or divs here -->
+    </div>
+
+    <main class="app-container">
+        <!-- Section for Search and Location -->
+        <header class="header-section">
+            <div class="search-bar">
+                <input type="text" id="city-input" placeholder="Search for a city...">
+                <button id="search-btn"><i class="fa-solid fa-search"></i></button>
+            </div>
+            <button id="gps-btn"><i class="fa-solid fa-location-crosshairs"></i> Use My Location</button>
+        </header>
+
+        <!-- Main Info Display -->
+        <section class="info-grid">
+            <div class="weather-main-card">
+                <h1 id="city-name">Loading...</h1>
+                <p id="date-normal">March 17, 2024</p>
+                <p id="date-islamic">Ramadan 7, 1445</p>
+                <div class="weather-display">
+                    <img id="weather-icon" src="http://openweathermap.org/img/wn/10d@4x.png" alt="weather icon">
+                    <p class="temperature"><span id="temp-main">--</span>°C</p>
+                </div>
+                <p id="weather-description">--</p>
+            </div>
+
+            <div class="time-card">
+                <h2>Local Time</h2>
+                <p id="local-time">--:--:--</p>
+            </div>
+
+       <!-- UPDATED Details Card -->
+<div class="details-card">
+    <h2>Details</h2>
+    <p>Feels Like: <span id="feels-like">--</span>°C</p>
+    <p>Humidity: <span id="humidity">--</span>%</p>
+    <p>Wind: <span id="wind-speed">--</span> km/h</p>
+    <!-- ADDED a divider and the new fields -->
+    <hr style="border-color: rgba(255,255,255,0.2); margin: 1rem 0;">
+    <p>Sunrise: <span id="sunrise-time">--:--</span></p>
+    <p>Sunset: <span id="sunset-time">--:--</span></p>
+</div>
+
+<!-- UPDATED Prayer Times Card -->
+<div class="prayer-times-card">
+    <h2>Namaz Times</h2>
+    <ul id="prayer-times-list">
+        <!-- ADDED the Imsak field -->
+        <li>Imsak(end of sehri): <span id="imsak-time">--:--</span></li>
+        <li>Fajr: <span>--:--</span></li>
+        <li>Dhuhr: <span>--:--</span></li>
+        <li>Asr: <span>--:--</span></li>
+        <li>Maghrib: <span>--:--</span></li>
+        <li>Isha: <span>--:--</span></li>
+    </ul>
+</div>
+
+            <div class="quote-card">
+                <h2>Quote of the Day</h2>
+                <blockquote id="quote-text">"Loading quote..."</blockquote>
+                <cite id="quote-author"></cite>
+            </div>
+        </section>
+    </main>
+    
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
