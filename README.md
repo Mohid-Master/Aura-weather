@@ -6,7 +6,7 @@ AuraWeather is a beautifully designed, all-in-one web application that serves as
 *(Replace with your actual live demo link after deployment)*
 
 
-(!screenshot)[screenshot.png]
+![screenshot](screenshot.png)
 
 ---
 
